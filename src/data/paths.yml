@@ -1,0 +1,7 @@
+# assets folder
+#========================
+# static site version
+ assets: "/assets/"
+#========================
+# ee version
+# assets: ""

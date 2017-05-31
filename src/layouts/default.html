@@ -1,0 +1,101 @@
+{{!-- This is the base layout for your project, and will be used on every page. --}}
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breaking Down The Quad - CBC Sports - Figure Skating</title>
+  <meta name="description" content="Since Kurt Browning landed the first ever quadruple jump in competition in 1988, the quad has become essential to skaters' program. But how do they do it?">
+  <meta name="author" content="Form &amp; Affect">
+   
+  <!-- Apple Mobile -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Fonts -->
+  <script src="https://use.typekit.net/mes1mjr.js"></script>
+  <script>try{Typekit.load({ async: true });}catch(e){}</script>
+   
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{root}}{{paths.assets}}css/app.css">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@CBCSports">
+  <meta name="twitter:title" content="Breaking Down The Quad - CBC Sports - Figure Skating">
+  <meta name="twitter:description" content="Quadruple jumps in men's figure skating are an essential part of skaters' program. But how do they pull it off with such ease?">
+  <meta name="twitter:image:src" content="http://www.cbc.ca/sports/olympics/winter/multimedia/thequad/assets/img/og.jpg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CBC Sports">
+  <meta property="og:title" content="Breaking Down The Quad - CBC Sports - Figure Skating">
+  <meta property="og:url" content="http://www.cbc.ca/sports/olympics/winter/multimedia/thequad/">
+  <meta property="og:description" content="Kurt Browning landed the first ever quadruple jump in competition at the World Championships in Hungary in 1988. Nearly 30 years later, the quad has become a key part of the program for Olympic level men skaters. So, how do they pull it off with such ease?">
+  <meta property="og:image" content="http://www.cbc.ca/sports/olympics/winter/multimedia/thequad/assets/img/og.jpg">
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="assets/img/favicon/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="assets/img/favicon/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="assets/img/favicon/manifest.json">
+  <link rel="mask-icon" href="assets/img/favicon/safari-pinned-tab.svg" color="#e60605">
+  <link rel="shortcut icon" href="assets/img/favicon/favicon.ico">
+  <meta name="msapplication-config" content="assets/img/favicon/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+  
+  <!-- Modernizr -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries if required -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+ 
+ 	<!--#include virtual="/g/i/header.html"-->
+ 
+  </head>
+  
+  <body>
+
+  <noscript>Sorry, please enable javascript to view this page</noscript>
+
+  {exp:cbc_shared_assets:nav nav="header" variation="core" style="responsive" theme="black"}
+	<!--#include virtual="/g/i/body.html"-->
+
+  <!--preloader for initial page load-->
+   <div class="loader-bg">
+      <div class="loader-initial">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </div>
+   
+    {{!-- Pages you create in the src/pages/ folder are inserted here when the flattened page is created. --}}
+    {{> body}}
+
+  <!-- jQuery -->
+  <script  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="  crossorigin="anonymous"></script>
+  <!-- Greensock -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
+
+  <!-- main last -->
+  <script src="{{root}}{{paths.assets}}media/three-scene/main.js"></script> 
+
+  <!-- react -->
+  <script src="{{root}}{{paths.assets}}js/react.js"></script>
+
+  <!-- JS -->
+  <script src="{{root}}{{paths.assets}}js/app.js"></script>
+
+  <!--#include
+virtual="/g/stats/vars.html?contentarea=sports&amp;subsection1=olympics&amp;subsection2=winter&amp;subsection3=multimedia&amp;subsection4=thequad&amp;contenttype=feature&amp;title=thequad&amp;contenttype=index" -->
+<!--#include virtual="/g/i/footer.html"-->
+</body>
+</html>
