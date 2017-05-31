@@ -1,3 +1,0 @@
-export const SAMPLE_TYPE = 'SAMPLE';
-export const NAV = 'NAV';
-//...
