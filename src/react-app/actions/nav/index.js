@@ -32,13 +32,6 @@ export function changeNav(id, isSet) {
     }
 }
 
-export function changePath(currentPath) {
-	return {
-		type: actionTypes.PATH,
-		payload: currentPath
-	}
-}
-
 export function changeIsTransitioning(isTransitioning) {
 
 	return {
@@ -88,12 +81,7 @@ export function calcNavDirection(prevPage, toPage) {
 	let pagesCopy = _.cloneDeep(pages);
 
 	//find out if toPage is above or below prevPage in the pages array
-	// let prevPageIndex = pagesCopy.indexOf(prevPage);
-	//let prevPageIndex = _.find(pagesCopy, function(item) {	return item.id == prevPage });
 	let prevPageIndex = _.indexOf(pagesCopy, _.find(pagesCopy, {id: prevPage}));
-
-	//let toPageIndex = pagesCopy.indexOf(toPage);
-	//let toPageIndex = _.find(pagesCopy, function(item) {	return item.id == toPage });
 	let toPageIndex = _.indexOf(pagesCopy, _.find(pagesCopy, {id: toPage}));
 
 	let pageDir = (prevPageIndex < toPageIndex) ? 'down' : 'up';
@@ -104,22 +92,6 @@ export function calcNavDirection(prevPage, toPage) {
 	}
 
 }
-
-// export function calcEndPages() {
-
-// 	//fix this later
-// 	//let pagesCopy = _.clone(pages);
-// 	//find page
-// 	// let firstPage = pagesCopy[0];
-// 	// let lastPage = pagesCopy.indexOf(pagesCopy.length);
-// 	let endPages = ['index', 'quint'];
-
-// 	return {
-// 		type: actionTypes.END_PAGES,
-// 		payload: endPages
-// 	}
-
-// }
 
 export function changeCurrentPages(currentPages) {
 

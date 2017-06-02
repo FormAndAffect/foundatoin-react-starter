@@ -1,8 +1,7 @@
-// import _ from 'lodash';
 import * as actionTypes from '../actions/types';
 
 
-const INITIAL_STATE = ['index',''];
+const INITIAL_STATE = ['',''];
 
 function reducerCurrentPages (state = INITIAL_STATE, action) {
 

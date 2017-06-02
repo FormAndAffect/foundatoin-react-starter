@@ -1,10 +1,11 @@
 # foundation-react-starter
 
 note:
-when adding a new page be sure to update the: 
--nav buttons reducer
--viewinternal component
--data/pages file
+when adding a new page in components/pages add it to:
+- components/pages/pageWrap
+- data/pages
+
+
 
 when pushing to cbc check for:
 
@@ -22,3 +23,4 @@ to
 
 to run gulp production node environment, do:
 NODE_ENV=production npm start
+

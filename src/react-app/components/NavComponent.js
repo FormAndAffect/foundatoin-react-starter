@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-// import GSAP from 'react-gsap-enhancer';
 var browser = require('browser-size')();
 import {store} from '../app';
 import watch from 'redux-watch';
@@ -85,4 +84,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(NavComponent);
-//export default connect(mapStateToProps)(GSAP()(NavComponent));

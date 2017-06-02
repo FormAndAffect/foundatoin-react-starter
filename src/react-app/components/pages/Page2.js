@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import gsap from 'gsap';
 
 
-
 class Page2 extends Component {
 
   constructor(props) {
@@ -26,7 +25,6 @@ class Page2 extends Component {
     //notify component starting to load
     this.props.onPageStarting();
     //start fadein animation
-    //this.controller = this.addAnimation(this.createPageAnim.bind(this));
     this.createPageAnim();
     this.setState({allLoaded: true})
   }
@@ -48,12 +46,6 @@ class Page2 extends Component {
     //call to parent all content loaded
     this.props.onPageLoadComplete();
   }
-
-  //   <img
-  //   ref={this.makeRef.bind(this)}
-  //   src="assets/img/large.jpg"
-  //   onLoad={this.handleLoaded.bind(this)}
-  //   />
 
 
   render() {

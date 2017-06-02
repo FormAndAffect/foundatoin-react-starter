@@ -5,12 +5,15 @@ import { hashHistory } from 'react-router';
 
 //utilities
 import { toggleClass } from '../lib/utils.js';
-import gsap from 'gsap';
 var browser = require('browser-size')();
 import * as Hammer from 'hammerjs';
+import _ from 'lodash';
 
 //components
 import NavComponent from './NavComponent';
+
+//data
+import pagesData from '../data/pages';
 
 class Nav extends Component {
 
@@ -26,6 +29,15 @@ class Nav extends Component {
     this.yDown = null;
     this.docBody = document.body;
     this.main = null; 
+    this.firstPage = '';
+    this.lastPage = '';
+
+  }
+
+  componentWillMount() {
+    //find the index of the current page to see if it's first or last
+    this.firstPage = pagesData[0].id;
+    this.lastPage = pagesData[pagesData.length - 1].id;
   }
 
   componentDidMount() {
@@ -50,8 +62,8 @@ class Nav extends Component {
     }
     this.main.removeEventListener("touchmove", this.onDrag);   
     this.main.removeEventListener("touchstart", this.onDragStart);
-  }
 
+  }
 
 
   //-----------------------------------------------------------------------------// 
@@ -86,16 +98,17 @@ class Nav extends Component {
       var speed = 1;
       var delta = delta * speed;
 
-      //if going down, and it's not on the first page...
-      if(delta === -1 && (this.props.currentPages[1] !== 'psychology')) {
+      //if going down, and it's not on the last page...
+      if(delta === -1 && (this.props.currentPages[1] !== this.lastPage)) {
         //scroll down, change page
         this.onOptionClick(this.props.scrollPages[2]);
-      //if going up, and it's not on the last page...
-      } else if (delta === 1 && (this.props.currentPages[1] !== 'index')) {
+      //if going up, and it's not on the first page...
+      } else if (delta === 1 && (this.props.currentPages[1] !== this.firstPage)) {
        //scroll up, change page
         this.onOptionClick(this.props.scrollPages[0]);
 
       }
+
     }
 
   }
@@ -123,12 +136,10 @@ class Nav extends Component {
   onDragStart(evt) {
 
     //evt.preventDefault();
-
     this.xDown = evt.touches[0].clientX;                                     
     this.yDown = evt.touches[0].clientY;
 
   };
-
 
 
   onDrag(evt) {
@@ -141,15 +152,14 @@ class Nav extends Component {
 
   onSwipeUp() {
     //up swipe change page
-    if (this.props.currentPages[1] !== 'psychology') {
+    if (this.props.currentPages[1] !== this.lastPage) {
       this.onOptionClick(this.props.scrollPages[2]);
     }
-
   }
 
   onSwipeDown() {
     //down swipe change page
-    if(this.props.currentPages[1] !== 'index') {
+    if(this.props.currentPages[1] !== this.firstPage) {
       this.onOptionClick(this.props.scrollPages[0]);
     }
 
@@ -173,7 +183,6 @@ class Nav extends Component {
 
       //set the current nav item
       this.props.changeNav(option, true);
-      console.log('this.props.changeNav: ', this.props.changeNav);
 
       //update the nav direction (prev-page, to-page)
       this.props.calcNavDirection(this.props.currentPages[1], option);
@@ -188,10 +197,6 @@ class Nav extends Component {
   }
 
   renderButtons() {
-
-    //include these above NavComponent to enable swipe
-    //<Swipe onSwipeComplete={that.onSwipeComplete.bind(that)} color1="#fff" color2="#000" id={item.id}/>
-    //<SwipeMobile onSwipeComplete={that.onMobileSwipeComplete.bind(that)} color1="#fff" id={item.id}/>
 
     let that = this;
     let buttonList = this.props.navItems.map(function(item) {
@@ -228,8 +233,6 @@ function mapStateToProps(state) {
         currentPages: state.currentPages,
         scrollPages: state.scrollPages,
         isTransitioning: state.isTransitioning,
-        endPages: state.endPages
-
     };
 }
 

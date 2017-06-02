@@ -69,6 +69,5 @@ function mapStateToProps(state) {
     currentPages: state.currentPages
   }
 }
-      
-//export default connect(mapStateToProps)(GSAP()(Page1));
+
 export default connect(mapStateToProps)(Page1);

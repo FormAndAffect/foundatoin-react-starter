@@ -2,24 +2,19 @@ import React, { Component, PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
-import _ from 'lodash';
 import { removeClass, hasClass } from '../../lib/utils';
 
 //components
 import Nav from '../Nav';
 import PageWrap from '../pages/PageWrap'
-import Page1 from '../pages/Page1';
-import Page2 from '../pages/Page2';
-import Page3 from '../pages/Page3';
 
 //actions
-import { changePath, changeScrollPages, changeCurrentPages, 
+import { changeScrollPages, changeCurrentPages, 
   changeIsTransitioning, changeNav } from '../../actions/nav';
 
 //utils
-import GSAP from 'react-gsap-enhancer';
-import Pubsub from 'pubsub-js';
 var browser = require('browser-size')();
+import _ from 'lodash';
 
 //data
 import pagesData from '../../data/pages';
@@ -57,8 +52,6 @@ class ViewInternal extends Component {
 
 
   changeCurrentPage(toPage) {
-    //set the current path
-    this.props.dispatch(changePath(location.pathname));
     //update url
     hashHistory.push(`${toPage}`);
     //get the current page from redux and make it the prev. page
@@ -83,19 +76,13 @@ class ViewInternal extends Component {
     let isValid = _.filter(pagesData, function(item){
       return item.id === pageFromUrl;
     });
-    //if the page doesn't exist, forward to the index page
+    //if the page doesn't exist, forward to the first page
     if (isValid.length === 0) {
-      pageFromUrl = 'index';
+      pageFromUrl = item.id;
     }
-
-    //set the current path
-    this.props.dispatch(changePath(location.pathname));
-
-    console.log(pageFromUrl);
 
     //update url
     hashHistory.push(`${pageFromUrl}`);
-
 
     this.forceUpdate();
 
@@ -199,41 +186,31 @@ class ViewInternal extends Component {
   //remove all but only on the current page:
   //pt-page-current
 
+  renderPages() {
+
+    return pagesData.map((item, index) => {
+      return (
+          <div key={index} className={`page-wrapper-outer ${item.id}`}>
+            <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === item.id) ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === item.id) && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === item.id) && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === item.id) ? 'pt-page-current pt-page-scaleUp' : ''}`}>
+              <PageWrap pageComponent={item.component} wrappedPage={item.id} onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}/>
+            </div>
+          </div>
+          )
+    });
+
+  }
 
   render() {
-
     return (
-              <div>
-                <Nav navItems={this.props.nav}  changeCurrentPage={this.changeCurrentPage.bind(this)} />
-                <div id="pt-main" className="pt-perspective">
+        <div>
+          <Nav navItems={this.props.nav}  changeCurrentPage={this.changeCurrentPage.bind(this)} />
+          <div id="pt-main" className="pt-perspective">
 
-                    <div className="page-wrapper-outer index">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'index') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'index') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'index') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'index') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={1} wrappedPage="index" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page1/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer pursuit">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'pursuit') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'pursuit') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'pursuit') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'pursuit') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={2} wrappedPage="pursuit" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page2/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer psychology">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'psychology') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'psychology') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'psychology') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'psychology') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={3} wrappedPage="psychology" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page3/>
-                        </PageWrap>
-                      </div>
-                    </div>
-                    
-                </div>
-              </div>
-          )
+          {this.renderPages()}
+              
+          </div>
+        </div>
+    )
   }
 
 }
@@ -253,4 +230,4 @@ function mapStateToProps(state) {
   }
 }
   
-export default connect(mapStateToProps)(GSAP()(ViewInternal));
+export default connect(mapStateToProps)(ViewInternal);

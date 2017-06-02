@@ -1,12 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { addClass, removeClass } from '../../lib/utils'
 
 //utils
-//import { refsToArray } from '../../lib/utils';
-import GSAP from 'react-gsap-enhancer';
-// import gsap from 'gsap';
-
+import gsap from 'gsap';
 
 
 class Page3 extends Component {
@@ -17,8 +13,7 @@ class Page3 extends Component {
 
     this.state = {
       //state: state,
-      allLoaded: false,
-      quoteContainer: null
+      allLoaded: false
     }
   }
 
@@ -30,67 +25,39 @@ class Page3 extends Component {
     //notify component starting to load
     this.props.onPageStarting();
     //start fadein animation
-    this.controller = this.addAnimation(this.createPageAnim.bind(this));
+    this.createPageAnim();
     this.setState({allLoaded: true})
   }
 
 
-  createPageAnim({target}) {
+  createPageAnim() {
 
-    //get the elements
-    let page = target.find({name: 'section'});
-    let willShow = target.find({name: 'willShow'});
+    //fade in the page then quad titles
+    let tl = new TimelineLite({onComplete: this.pageAnimComplete.bind(this)})
+    tl
+      .set(this.refs.willShow, {autoAlpha: 0, scale:0.7})
+      .to(this.refs.section, 0.5, {autoAlpha: 1}, 0.5)
+      .to(this.refs.willShow, 0.3, {autoAlpha: 1, scale:1})
 
-    // TweenLite.set(quoteContainer, {class:'-=noShow'})
-    // TweenLite.set(quoteContainer, {class:'+=show'});
-
-    //just fade in the page
-    return new TimelineLite({onComplete: this.pageAnimComplete.bind(this)})
-      .set(willShow, {autoAlpha: 0, scale:0.7})
-      .to(page, 0.5, {autoAlpha: 1}, 0.5)
-      .to(willShow, 0.3, {autoAlpha: 1, scale:1})
-      //.insert(TweenLite.set(quoteContainer, {className:'-=noShow'}))
-      //.insert(TweenLite.set(quoteContainer, {className:'+=show'}), "+=1")
-    // .to(quoteContainer, 0.5, {autoAlpha: 1});
-    // TweenLite.set(quoteContainer, {class:'-=noShow'})
-    // TweenLite.set(quoteContainer, {class:'+=show'});
-
-    // removeClass(this.refs.quoteContainer, 'noShow');
-    // addClass(this.refs.quoteContainer, 'show');
-
-    //kill all animations on component
-    this.controller.kill();
+    tl = null;
   }
 
   pageAnimComplete() {
     //call to parent all content loaded
     this.props.onPageLoadComplete();
-
-    //animate the quote container
-
   }
 
-
-  //   <img
-  //   ref={this.makeRef.bind(this)}
-  //   src="assets/img/large.jpg"
-  //   onLoad={this.handleLoaded.bind(this)}
-  //   />
-
-  // <img
-  //   ref={this.makeRef.bind(this)}
-  //   src="assets/img/large.jpg"
-  //   onLoad={this.handleLoaded.bind(this)}
-  //   />
 
   render() {
           return (
                 <div>
-                  <section name="section" className="page-content slide quote row expanded align-middle align-center">
-                    <div name="willShow" className="small-10 medium-8 large-6 text-center will-reveal">
-                      <blockquote>There are quite a few skaters doing them, but only a few doing them ALL. The quads are back to being a make-or-break factor in the men’s event.</blockquote>
-                      <cite className="fromLeft">Kurt Browning<span>Olympian &amp; 4X WORLD CHAMPION</span></cite>
-			              </div>
+                  <section ref="section" className="page-content slide quote row expanded align-middle align-center">
+                    <div ref="willShow" className="small-10 medium-8 large-6 text-center will-reveal">
+                      <blockquote>When they fall on a jump like that, some say it feels like their intestines end up in their throat.</blockquote>
+                      <cite className="fromLeft">Tom Zakrajsek<span>WORLD AND OLYMPIC FIGURE-SKATING COACH</span>
+                        <a target="_blank" href="https://www.scientificamerican.com/article/is-the-quintuple-jump-in-figure-skating-physically-possible/">(Source: Scientific American)</a>
+                      </cite>
+                    </div>
                   </section>
                 </div>
             )
@@ -103,4 +70,4 @@ function mapStateToProps(state) {
   }
 }
       
-export default connect(mapStateToProps)(GSAP()(Page3));
+export default connect(mapStateToProps)(Page3);
