@@ -11,26 +11,17 @@ import PageWrap from '../pages/PageWrap'
 import Page1 from '../pages/Page1';
 import Page2 from '../pages/Page2';
 import Page3 from '../pages/Page3';
-import Page4 from '../pages/Page4';
-import Page5 from '../pages/Page5';
-import Page6 from '../pages/Page6';
-import Page7 from '../pages/Page7';
-import Page8 from '../pages/Page8';
-import Page9 from '../pages/Page9';
-import Page10 from '../pages/Page10';
-import Page11 from '../pages/Page11';
-import Page12 from '../pages/Page12';
-import Page13 from '../pages/Page13';
-import Page14 from '../pages/Page14';
 
 //actions
-import { changePath, changeScrollPages } from '../../actions/nav';
-import { changeCurrentPages, changeIsTransitioning } from '../../actions/nav';
+import { changePath, changeScrollPages, changeCurrentPages, 
+  changeIsTransitioning, changeNav } from '../../actions/nav';
 
 //utils
 import GSAP from 'react-gsap-enhancer';
 import Pubsub from 'pubsub-js';
 var browser = require('browser-size')();
+
+//data
 import pagesData from '../../data/pages';
 
 class ViewInternal extends Component {
@@ -48,7 +39,7 @@ class ViewInternal extends Component {
 
   }
 
-  componentWillMount() {
+  componentDidMount() {
     //change page
     this.changePageFromUrl();
 
@@ -58,10 +49,6 @@ class ViewInternal extends Component {
     } else {
       this.initialIsMobile = true;
     }
-  }
-
-  componentDidMount() {
-
   }
 
   triggerInitialLoad() {
@@ -83,6 +70,9 @@ class ViewInternal extends Component {
   }
 
   changePageFromUrl() {
+
+    //handle initial page load or page refresh...
+
     //get the hash url
     let location = hashHistory.getCurrentLocation();
     //remove starts with slash
@@ -91,21 +81,32 @@ class ViewInternal extends Component {
 
     //check if the current path exists in the pages data and process
     let isValid = _.filter(pagesData, function(item){
-      return item === pageFromUrl;
+      return item.id === pageFromUrl;
     });
-
+    //if the page doesn't exist, forward to the index page
     if (isValid.length === 0) {
       pageFromUrl = 'index';
-    } 
+    }
 
     //set the current path
     this.props.dispatch(changePath(location.pathname));
+
+    console.log(pageFromUrl);
+
     //update url
     hashHistory.push(`${pageFromUrl}`);
+
+
+    this.forceUpdate();
+
+    //run the nav action to populatge the nav reducer with page data
+    this.props.dispatch(changeNav(pageFromUrl, true));
     //change page
     this.props.dispatch(changeCurrentPages(['',pageFromUrl]));
     //update the three pages used for scrolling
     this.props.dispatch(changeScrollPages(pageFromUrl));
+
+    this.forceUpdate();
 
   }
 
@@ -114,10 +115,6 @@ class ViewInternal extends Component {
 
     //signify that the page has loaded
     this.setState({ pageStatus: 'loaded' });
-
-    //kill all animations on component
-    //this.controller.kill();
-
   }
 
 
@@ -168,11 +165,6 @@ class ViewInternal extends Component {
             removeClass(el, 'pt-page-current');
           }
 
-          //special case for the three scene
-          //notify when transition has finiehed to then load the 3d scene
-          if(that.props.currentPages[1] === 'anatomy') {
-            Pubsub.publish('loadThreeScene', "loadScene");
-          }
           //store, animation ended
           that.props.dispatch(changeIsTransitioning(false));
       }
@@ -239,120 +231,12 @@ class ViewInternal extends Component {
                       </div>
                     </div>
                     
-                    <div className="page-wrapper-outer jumps">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'jumps') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'jumps') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'jumps') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'jumps') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={4} wrappedPage="jumps" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page4/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer height">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'height') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'height') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'height') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'height') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={5} wrappedPage="height" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page5/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer hangtime">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'hangtime') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'hangtime') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'hangtime') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'hangtime') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={6} wrappedPage="hangtime" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page6/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer rotation">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'rotation') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'rotation') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'rotation') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'rotation') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={7} wrappedPage="rotation" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page7/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer landing">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'landing') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'landing') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'landing') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'landing') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={8} wrappedPage="landing" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page8/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer perspective">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'perspective') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'perspective') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'perspective') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'perspective') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={9} wrappedPage="perspective" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page9/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer stages">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'stages') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'stages') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'stages') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'stages') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={10} wrappedPage="stages" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page10/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-
-                      <div className="page-wrapper-outer anatomy">
-                        <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'anatomy') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'anatomy') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'anatomy') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'anatomy') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                          <PageWrap key={11} wrappedPage="anatomy" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                            <Page11/>
-                          </PageWrap>
-                        </div>
-                      </div>
-
-                    <div className="page-wrapper-outer firsts">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'firsts') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'firsts') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'firsts') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'firsts') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={12} wrappedPage="firsts" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page12/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-
-                    <div className="page-wrapper-outer quint">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'quint') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'quint') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'quint') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'quint') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={13} wrappedPage="quint" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page13/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
-                    <div className="page-wrapper-outer promo">
-                      <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'promo') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'promo') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'promo') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'promo') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-                        <PageWrap key={14} wrappedPage="promo" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-                          <Page14/>
-                        </PageWrap>
-                      </div>
-                    </div>
-
                 </div>
               </div>
           )
   }
 
 }
-
-
-// { !this.state.initialIsMobile &&
-
-// }
-
-
-// '
-// <div className="page-wrapper-outer anatomy">
-//   <div ref={this.onPageMount.bind(this)} className={`pt-page ${(this.props.currentPages[0] === 'anatomy') ? 'pt-page-current pt-page-ontop prev-page' : ''} ${((this.props.currentPages[0] === 'anatomy') && (this.props.navDirection === 'down')) ? 'pt-page-moveToTop' : ''} ${((this.props.currentPages[0] === 'anatomy') && (this.props.navDirection === 'up')) ? 'pt-page-moveToBottom' : ''} ${(this.props.currentPages[1] === 'anatomy') ? 'pt-page-current pt-page-scaleUp' : ''}`}>
-//     <PageWrap key={11} wrappedPage="anatomy" onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}>
-//       <Page11/>
-//     </PageWrap>
-//   </div>
-// </div>
-
-// '
-
 
 
 function mapStateToProps(state) {

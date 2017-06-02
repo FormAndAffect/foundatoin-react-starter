@@ -1,10 +1,11 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
+// import webpack from 'webpack';
 
 const absPath = require('path');
+const webpack = require('webpack');
 
-
-// Load settings from settings.yml
+//Load settings from settings.yml
 const { PATHS } = loadConfig();
 
 function loadConfig() {
@@ -15,7 +16,7 @@ function loadConfig() {
 
 module.exports = {
 
-      watch: true,
+      
 
       //context: __dirname,
       //configuration
@@ -42,19 +43,26 @@ module.exports = {
         rules: [
           {
             test: /\.(js|jsx)$/,
-            use: 'babel-loader'
-          },
+            use: 'babel-loader',
+          }
         ]
       },
       //just need this to concat to it in gulpfile
-      plugins: [],
+      // plugins: [],
+      // plugins: [['transform-es2015-classes', {loose: true}]],
+      //https://github.com/babel/babel/issues/3041
+
 
       devtool: "source-map",
 
-      devServer: {
-        contentBase: absPath.resolve(__dirname, "dist"),
-        compress: true,
-        port: 8080,
-        hot: true
-      }
+      // devServer: {
+      //   contentBase: absPath.resolve(__dirname, "dist"),
+      //   compress: true,
+      //   port: 8080,
+      //   hot: true
+      // },
+
+      watch: true,
+
+
 }

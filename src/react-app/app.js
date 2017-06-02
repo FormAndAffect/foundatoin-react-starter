@@ -17,7 +17,7 @@ import routes from './routes';
 //const createStoreWithMiddleware = applyMiddleware()(createStore);
 //<Provider store={createStoreWithMiddleware(reducers)}>
 
-//if using reducThunk...
+//if using reduxThunk...
 // import reduxThunk from 'redux-thunk';
 // const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 //<Provider store={createStoreWithMiddleware(reducers)}>

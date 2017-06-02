@@ -78,7 +78,7 @@ function reactJavascript(done) {
 
           gutil.log("webpack build complete");
           //still can't get browser to reload...
-          browser.reload;
+          //browser.reload;
           
       }); 
 
@@ -256,9 +256,7 @@ function watchAssets() {
   gulp.watch('src/assets/js/vendor.js').on('all', gulp.series(vendorJavascript, rsyncAssets, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, rsyncAssets, browser.reload));
   gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, rsyncAssets, browser.reload));
-  //react
-  gulp.watch('src/react-app/**/*.{js,jsx}').on('all', gulp.series(reactJavascript, browser.reload));
-  gulp.watch('src/react-template/**/*').on('all', gulp.series(reactJavascript, browser.reload));
+
 }
 
 // Watch for changes to static assets, and ee templates then rsync

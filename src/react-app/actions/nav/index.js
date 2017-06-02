@@ -6,10 +6,29 @@ import pages from '../../data/pages'
 
 export function changeNav(id, isSet) {
 
+	let pagesCopy = _.cloneDeep(pages);
+
+	//find the object with the incoming id
+	var data = _.find(pagesCopy, function(item){ return item.id == id; });
+
+	if(data) {
+		//set it to true or false
+		data.isSet = isSet;
+
+		var index = _.indexOf(pagesCopy, _.find(pagesCopy, {id: id}));
+
+		//Replace item at index using native splice
+		pagesCopy.splice(index, 1, data);
+		
+	}
+	else {
+
+		console.log('error getting pages data');
+	}
+
     return {
         type: actionTypes.NAV,
-        idPayload: id,
-        isSetPayload: isSet
+        payload: pagesCopy,
     }
 }
 
@@ -31,22 +50,26 @@ export function changeIsTransitioning(isTransitioning) {
 
 export function changeScrollPages(currentPage) {
 
-	let pagesCopy = _.clone(pages);
+	let pagesCopy = _.cloneDeep(pages);
 
 	//find next, prev. item in the array
 	let nextItem = '';
 	let prevItem = '';
 	let index = 0;
-	index = pagesCopy.indexOf(currentPage);
+
+
+	//index = pagesCopy.indexOf(currentPage);
+	index = _.indexOf(pagesCopy, _.find(pagesCopy, {id: currentPage}));
+
 	if(index >= 0) {
 		//need -1 since index uses 0 index and length doesn't
 		if(index !== pagesCopy.length - 1) {
-			nextItem = pagesCopy[index + 1];
+			nextItem = pagesCopy[index + 1].id;
 		} else {
 			nextItem = '';
 		}
 		if(index !== 0) {
-			prevItem = pagesCopy[index - 1];
+			prevItem = pagesCopy[index - 1].id;
 		} else {
 			prevItem = '';
 		}
@@ -62,11 +85,16 @@ export function changeScrollPages(currentPage) {
 
 export function calcNavDirection(prevPage, toPage) {
 
-	let pagesCopy = _.clone(pages);
+	let pagesCopy = _.cloneDeep(pages);
 
 	//find out if toPage is above or below prevPage in the pages array
-	let prevPageIndex = pagesCopy.indexOf(prevPage);
-	let toPageIndex = pagesCopy.indexOf(toPage);
+	// let prevPageIndex = pagesCopy.indexOf(prevPage);
+	//let prevPageIndex = _.find(pagesCopy, function(item) {	return item.id == prevPage });
+	let prevPageIndex = _.indexOf(pagesCopy, _.find(pagesCopy, {id: prevPage}));
+
+	//let toPageIndex = pagesCopy.indexOf(toPage);
+	//let toPageIndex = _.find(pagesCopy, function(item) {	return item.id == toPage });
+	let toPageIndex = _.indexOf(pagesCopy, _.find(pagesCopy, {id: toPage}));
 
 	let pageDir = (prevPageIndex < toPageIndex) ? 'down' : 'up';
 

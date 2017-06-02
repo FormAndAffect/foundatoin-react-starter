@@ -10,10 +10,7 @@ var browser = require('browser-size')();
 import * as Hammer from 'hammerjs';
 
 //components
-//import ButtonComponent from './ButtonComponent';
 import NavComponent from './NavComponent';
-import Swipe from './Swipe';
-import SwipeMobile from './SwipeMobile';
 
 class Nav extends Component {
 
@@ -32,8 +29,6 @@ class Nav extends Component {
   }
 
   componentDidMount() {
-    //set curent nav item from url on first load
-    this.navFromUrl();
     //setup the mouse
     this.setupMouse(); 
     //setup touch drag
@@ -83,7 +78,7 @@ class Nav extends Component {
     //console.log('animating: ', this.animating );
 
     //if not during css transition or on three scene page
-    if(!this.props.isTransitioning && (this.props.currentPages[1] !== 'anatomy')) {
+    if(!this.props.isTransitioning) {
       // cross-browser
       e = window.event || e;
       // capture the wheel delta and force it to either 1 or -1
@@ -92,7 +87,7 @@ class Nav extends Component {
       var delta = delta * speed;
 
       //if going down, and it's not on the first page...
-      if(delta === -1 && (this.props.currentPages[1] !== 'promo')) {
+      if(delta === -1 && (this.props.currentPages[1] !== 'psychology')) {
         //scroll down, change page
         this.onOptionClick(this.props.scrollPages[2]);
       //if going up, and it's not on the last page...
@@ -141,69 +136,23 @@ class Nav extends Component {
     //prevent the entire page from moving with the drag
     evt.preventDefault();
     //stop bubling up
-    evt.stopPropagation();
-
-    // //if not on three page
-    // if(this.props.currentPages[1] !== 'anatomy') {
-
-    //   if ( !this.xDown || !this.yDown ) {
-    //       return;
-    //   }
-
-    //   var xUp = evt.touches[0].clientX;                                    
-    //   var yUp = evt.touches[0].clientY;
-
-    //   console.log('evt.touches[0].clentX: ', evt.touches[0].clientX);
-    //   console.log('evt.touches: ', evt.touches);
-
-    //   var xDiff = this.xDown - xUp;
-    //   var yDiff = this.yDown - yUp;
-
-    //   if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
-    //       if ( xDiff > 0 ) {
-    //           //left swipe */
-    //           //console.log('left swipe');
-    //       } else {
-    //            //right swipe 
-    //           //console.log('right swipe');
-    //       }                       
-    //   } else {
-    //       if ( yDiff > 0 ) {
-    //           //up swipe change page
-    //           if (this.props.currentPages[1] !== 'promo') {
-    //             this.onOptionClick(this.props.scrollPages[2]);
-    //           }
-    //       } else { 
-    //           //down swipe change page
-    //           if(this.props.currentPages[1] !== 'index') {
-    //             this.onOptionClick(this.props.scrollPages[0]);
-    //           }
-    //       }                                                                 
-    //   }
-    //   /* reset values */
-    //   this.xDown = null;
-    //   this.yDown = null;        
-
-    // }
-                                
+    evt.stopPropagation();                            
   }
 
   onSwipeUp() {
-    if(this.props.currentPages[1] !== 'anatomy') {
-      //up swipe change page
-      if (this.props.currentPages[1] !== 'promo') {
-        this.onOptionClick(this.props.scrollPages[2]);
-      }
+    //up swipe change page
+    if (this.props.currentPages[1] !== 'psychology') {
+      this.onOptionClick(this.props.scrollPages[2]);
     }
+
   }
 
   onSwipeDown() {
-    if(this.props.currentPages[1] !== 'anatomy') {
-      //down swipe change page
-      if(this.props.currentPages[1] !== 'index') {
-        this.onOptionClick(this.props.scrollPages[0]);
-      }
+    //down swipe change page
+    if(this.props.currentPages[1] !== 'index') {
+      this.onOptionClick(this.props.scrollPages[0]);
     }
+
   }
 
 
@@ -212,23 +161,11 @@ class Nav extends Component {
   //-----------------------------------------------------------------------------//
 
 
-  navFromUrl() {
-    //set current nav item on page load
-    let location = hashHistory.getCurrentLocation();
-    //remove starts with slash
-    let pageFromUrl = location.pathname.replace(/^\//, '');
-    //if root url, set it to the first page
-    if(pageFromUrl === '') {
-      pageFromUrl = '';
-    }
-    //set the current nav item
-    this.props.changeNav(pageFromUrl, true);
-  }
-
   onOptionClick(option) {
 
     //if selected the current page again, do nothing
     if(this.props.currentPages[1] !== option) {
+
       //reset all items first
       this.props.nav.map((item) => {
         this.props.changeNav(item.id, false);
@@ -236,17 +173,10 @@ class Nav extends Component {
 
       //set the current nav item
       this.props.changeNav(option, true);
+      console.log('this.props.changeNav: ', this.props.changeNav);
+
       //update the nav direction (prev-page, to-page)
       this.props.calcNavDirection(this.props.currentPages[1], option);
-
-      // //publish to swipe or mobile swipe depending on browser size
-      // if(browser.width < 800) {
-      //   //publish nav clicked to swipes
-      //   Pubsub.publish('mobileNavClicked-' + option, "nav1");
-      // } else {
-      //   //publish nav clicked to mobile swip
-      //   Pubsub.publish('navClicked-' + option, "nav1");
-      // }
 
       this.setState({currentPage: option}, () => {
         //turn this off and include it in onSwipeComplete and onMobileSwipeComplete

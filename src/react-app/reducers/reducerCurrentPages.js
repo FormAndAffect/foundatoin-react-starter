@@ -2,7 +2,7 @@
 import * as actionTypes from '../actions/types';
 
 
-const INITIAL_STATE = ['',''];
+const INITIAL_STATE = ['index',''];
 
 function reducerCurrentPages (state = INITIAL_STATE, action) {
 

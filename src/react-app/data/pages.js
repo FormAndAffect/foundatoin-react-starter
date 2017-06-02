@@ -1,46 +1,16 @@
-var browser = require('browser-size')();
+// let pagesData =	[
+// 		"index",
+// 		"pursuit",
+// 		"psychology"
+// ]
 
-let pagesData = []
 
-if(browser.width > 1200) {
-//if not mobile
-//enable three scene
-pagesData =	[
-		"index",
-		"pursuit",
-		"psychology",
-		"jumps",
-		"height",
-		"hangtime",
-		"rotation",
-		"landing",
-		"perspective",
-		"stages",
-		"anatomy",
-		"firsts",
-		"quint",
-		"promo"
-	]
+// module.exports = pagesData;
 
-} else {
-//if mobile
-pagesData =	[
-		"index",
-		"pursuit",
-		"psychology",
-		"jumps",
-		"height",
-		"hangtime",
-		"rotation",
-		"landing",
-		"perspective",
-		"stages",
-		"anatomy",
-		"firsts",
-		"quint",
-		"promo"
-	]
-
-}
+let pagesData = [
+	{ id: 'index', isSet: true, name: "01", class: "nav-link", icon: ""},
+	{ id: 'pursuit', isSet: false, name: "02", class: "nav-link", icon: "" },
+	{ id: 'psychology', isSet: false, name: "03", class: "nav-link", icon: "" }
+]
 
 module.exports = pagesData;
