@@ -1,6 +1,5 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-// import webpack from 'webpack';
 
 const absPath = require('path');
 const webpack = require('webpack');

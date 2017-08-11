@@ -13,7 +13,7 @@ import { changeScrollPages, changeCurrentPages,
   changeIsTransitioning, changeNav } from '../../actions/nav';
 
 //utils
-var browser = require('browser-size')();
+let browser = require('browser-size')();
 import _ from 'lodash';
 
 //data
@@ -27,22 +27,19 @@ class ViewInternal extends Component {
       pageStatus: 'loading',
       location: '',
     };
-
     this.scrollValue = 0;
     this.animating = false;
-    this.initialIsMobile = false
-
   }
 
   componentDidMount() {
     //change page
     this.changePageFromUrl();
 
-    //set the browser widthh on page load
+    //set the browser width on page load
     if(browser.width > 1200) {
-      this.initialIsMobile = false;
+      //mobile
     } else {
-      this.initialIsMobile = true;
+      //not mobile
     }
   }
 
@@ -63,7 +60,6 @@ class ViewInternal extends Component {
   }
 
   changePageFromUrl() {
-
     //handle initial page load or page refresh...
 
     //get the hash url
@@ -78,7 +74,7 @@ class ViewInternal extends Component {
     });
     //if the page doesn't exist, forward to the first page
     if (isValid.length === 0) {
-      pageFromUrl = item.id;
+      pageFromUrl = pagesData[0].id;
     }
 
     //update url
@@ -94,12 +90,10 @@ class ViewInternal extends Component {
     this.props.dispatch(changeScrollPages(pageFromUrl));
 
     this.forceUpdate();
-
   }
 
 
   handlePageLoaded(page) {
-
     //signify that the page has loaded
     this.setState({ pageStatus: 'loaded' });
   }
@@ -117,17 +111,17 @@ class ViewInternal extends Component {
   whichAnimationEvent(){
     //this is just for testing what browser
     //you're using and producing the correct transitioned event name
-    var t,
+    let t,
         el = document.createElement("fakeelement");
 
-    var animations = {
+    let animations = {
       "animation"      : "animationend",
       "OAnimation"     : "oAnimationEnd",
       "MozAnimation"   : "animationend",
       "WebkitAnimation": "webkitAnimationEnd"
-    }
+    };
 
-    for (t in animations){
+    for(t in animations) {
       if (el.style[t] !== undefined){
         return animations[t];
       }
@@ -187,7 +181,6 @@ class ViewInternal extends Component {
   //pt-page-current
 
   renderPages() {
-
     return pagesData.map((item, index) => {
       return (
           <div key={index} className={`page-wrapper-outer ${item.id}`}>
@@ -195,39 +188,34 @@ class ViewInternal extends Component {
               <PageWrap pageComponent={item.component} wrappedPage={item.id} onLoading={this.triggerInitialLoad.bind(this)} onLoaded={this.handlePageLoaded.bind(this)}/>
             </div>
           </div>
-          )
+          );
     });
-
   }
 
   render() {
     return (
         <div>
-          <Nav navItems={this.props.nav}  changeCurrentPage={this.changeCurrentPage.bind(this)} />
+          <Nav navItems={this.props.nav} changeCurrentPage={this.changeCurrentPage.bind(this)} />
           <div id="pt-main" className="pt-perspective">
 
           {this.renderPages()}
               
           </div>
         </div>
-    )
+    );
   }
-
 }
 
 
 function mapStateToProps(state) {
-
-
   return {
     //redux state
     path: state.path,
     nav: state.nav,
-    mediaSize: state.mediaSize,
     currentPages: state.currentPages,
     navDirection: state.navDirection,
     scrollPages: state.scrollPages,
-  }
+  };
 }
   
 export default connect(mapStateToProps)(ViewInternal);

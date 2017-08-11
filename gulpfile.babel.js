@@ -1,24 +1,25 @@
-/*eslint-env node */
+/* eslint-env node */
+//* eslint-disable */
 
 'use strict';
 
-import plugins  from 'gulp-load-plugins';
-import yargs    from 'yargs';
-import browser  from 'browser-sync';
-import gulp     from 'gulp';
-import panini   from 'panini';
-import rimraf   from 'rimraf';
-import sherpa   from 'style-sherpa';
-import yaml     from 'js-yaml';
-import fs       from 'fs';
+import plugins from 'gulp-load-plugins';
+import yargs from 'yargs';
+import browser from 'browser-sync';
+import gulp from 'gulp';
+import panini from 'panini';
+import rimraf from 'rimraf';
+import sherpa from 'style-sherpa';
+import yaml from 'js-yaml';
+import fs from 'fs';
 
 //for react
 import webpack from 'webpack';
-import gutil    from 'gulp-util'
+import gutil from 'gulp-util';
 import webpackConfig from './webpack.config.js';
 import WebpackDevServer from 'webpack-dev-server';
 
-//for running shess scripts
+//for running shell scripts
 const exec = require('child_process').exec;
 
 // Load all Gulp plugins into one variable
@@ -31,7 +32,7 @@ const PRODUCTION = !!(yargs.argv.production);
 const { COMPATIBILITY, PORT, UNCSS_OPTIONS, PATHS, FTP } = loadConfig();
 
 function loadConfig() {
-  let ymlFile = fs.readFileSync('config.yml', 'utf8');
+  const ymlFile = fs.readFileSync('config.yml', 'utf8');
   return yaml.load(ymlFile);
 }
 
@@ -41,7 +42,8 @@ function loadConfig() {
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel([pages, sass, javascript, vendorJavascript, images, copy]), styleGuide));
+ gulp.series(clean, gulp.parallel([pages, sass, javascript, vendorJavascript, images, copy]), 
+  styleGuide));
 
 // Build the site, run the server, then watch for file changes, and run webpack(with dev server)
 gulp.task('default',
@@ -87,7 +89,7 @@ function reactJavascript(done) {
       //dev version
       gutil.log('running production webpack');
       //grab existing config file
-      var myConfig = Object.create(webpackProdConfig);
+      let myConfig = Object.create(webpackProdConfig);
       // myConfig.watch = true;
 
       // var taskNum = 1; // A counter to track how many times the webpack task runs
@@ -219,31 +221,30 @@ function reload(done) {
 
 function rsyncAssets(done) {
   gutil.log("rsync assets...");
-  var cmd1 = '/usr/bin/rsync -arv --exclude "*.html"  -e "ssh -i $HOME/.ssh/id_rsa_reifwinery -p 52802" ' + PATHS.dist + '/' + ' reifwinery@159.203.37.121:' + PATHS.distServer
+  let cmd1 = '/usr/bin/rsync -arv --exclude "*.html"  -e "ssh -i $HOME/.ssh/id_rsa_reifwinery -p 52802" ' + 
+  PATHS.dist + '/' + ' reifwinery@159.203.37.121:' + PATHS.distServer
   exec(cmd1, function(error, stdout, stderr) { 
     console.log(stdout);
     console.log(stderr);
     done();
   });
-  
-
 }
 
 function rsyncTemplates(done) {
-  gutil.log("rsync templates...");
-  var cmd2 = '/usr/bin/rsync -arv  -e "ssh -i $HOME/.ssh/id_rsa_reifwinery -p 52802" '  + PATHS.eeTemplates + '/' + ' reifwinery@159.203.37.121:' + PATHS.eeTemplatesServer
+  let cmd2 = '/usr/bin/rsync -arv  -e "ssh -i $HOME/.ssh/id_rsa_reifwinery -p 52802" ' + 
+  PATHS.eeTemplates + '/' + ' reifwinery@159.203.37.121:' + PATHS.eeTemplatesServer;
   exec(cmd2, function(error, stdout, stderr) { 
     console.log(stdout);
     console.log(stderr);
     done();
   });
-  
 }
 
 //watch for panini (html) changes
 function watch() {
   gulp.watch('src/pages/**/*.html').on('all', gulp.series(pages, browser.reload));
-  gulp.watch('src/{layouts,partials}/**/*.html').on('all', gulp.series(resetPages, pages, browser.reload));
+  gulp.watch('src/{layouts,partials}/**/*.html').on('all', 
+    gulp.series(resetPages, pages, browser.reload));
   watchAssets();
 }
 
@@ -252,11 +253,12 @@ function watch() {
 function watchAssets() {
   gulp.watch(PATHS.media, copy);
   gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass, browser.reload));
-  gulp.watch('src/assets/js/app.js').on('all', gulp.series(javascript, rsyncAssets, browser.reload));
-  gulp.watch('src/assets/js/vendor.js').on('all', gulp.series(vendorJavascript, rsyncAssets, browser.reload));
+  gulp.watch('src/assets/js/app.js').on('all', 
+    gulp.series(javascript, rsyncAssets, browser.reload));
+  gulp.watch('src/assets/js/vendor.js').on('all', 
+    gulp.series(vendorJavascript, rsyncAssets, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, rsyncAssets, browser.reload));
   gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, rsyncAssets, browser.reload));
-
 }
 
 // Watch for changes to static assets, and ee templates then rsync
@@ -270,5 +272,4 @@ function watchProduction() {
   gulp.watch('src/assets/js/vendor.js').on('all', gulp.series(vendorJavascript, rsyncAssets));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, rsyncAssets));
   gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, rsyncAssets));
-
 }

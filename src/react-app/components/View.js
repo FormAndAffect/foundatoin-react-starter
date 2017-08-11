@@ -13,14 +13,13 @@ class View extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
 
     //select from a list of components
     this.components = {
       //ViewIndex,
       ViewInternal
-    }
-
+    };
   }
 
   render() {
@@ -31,7 +30,7 @@ class View extends Component {
         <div className="component-wrapper" >
               <SpecificComponent key={1} {...this.props} />
         </div>
-      )
+      );
   }
 
 }

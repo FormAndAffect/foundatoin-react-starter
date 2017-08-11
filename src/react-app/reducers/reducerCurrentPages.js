@@ -1,25 +1,24 @@
 import * as actionTypes from '../actions/types';
 
 
-const INITIAL_STATE = ['',''];
+const INITIAL_STATE = ['', ''];
 
-function reducerCurrentPages (state = INITIAL_STATE, action) {
+function reducerCurrentPages(state = INITIAL_STATE, action) {
+	switch(action.type) {
 
-  switch(action.type) {
+		case actionTypes.CURRENT_PAGES:
 
-    case actionTypes.CURRENT_PAGES:
+			return action.payload;
 
-		return action.payload;
+		// case actionTypes.RESET_REDUCERS:
 
-	// case actionTypes.RESET_REDUCERS:
+		//    	//return initial state
+		//    	return INITIAL_STATE;
 
- //    	//return initial state
- //    	return INITIAL_STATE;
+		default:
 
-    default:
-    
-        return state;
-  }
+		return state;
+	}
 }
 
 export default reducerCurrentPages;

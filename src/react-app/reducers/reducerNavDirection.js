@@ -1,7 +1,6 @@
 import * as actionTypes from '../actions/types';
 
-export default function reducerNavDirection (state = '', action) {
-    
+export default function reducerNavDirection(state = '', action) {
     switch (action.type) {
 
         case actionTypes.NAV_DIRECTION:
@@ -13,5 +12,4 @@ export default function reducerNavDirection (state = '', action) {
             return state;
 
     }
-
 }

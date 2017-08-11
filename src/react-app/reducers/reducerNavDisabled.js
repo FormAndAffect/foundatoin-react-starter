@@ -1,7 +1,6 @@
 import * as actionTypes from '../actions/types';
 
-export default function reducerNavDisabled (state = false, action) {
-    
+export default function reducerNavDisabled(state = false, action) {
     switch (action.type) {
 
         case actionTypes.NAV_DISABLED:
@@ -13,5 +12,4 @@ export default function reducerNavDisabled (state = false, action) {
             return state;
 
     }
-
 }

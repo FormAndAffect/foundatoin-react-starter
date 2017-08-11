@@ -5,31 +5,28 @@ import pages from '../../data/pages'
 
 
 export function changeNav(id, isSet) {
-
 	let pagesCopy = _.cloneDeep(pages);
 
 	//find the object with the incoming id
-	var data = _.find(pagesCopy, function(item){ return item.id == id; });
+	let data = _.find(pagesCopy, function(item){ return item.id == id; });
 
 	if(data) {
 		//set it to true or false
 		data.isSet = isSet;
 
-		var index = _.indexOf(pagesCopy, _.find(pagesCopy, {id: id}));
+		let index = _.indexOf(pagesCopy, _.find(pagesCopy, {id: id}));
 
 		//Replace item at index using native splice
 		pagesCopy.splice(index, 1, data);
-		
 	}
 	else {
-
 		console.log('error getting pages data');
 	}
 
-    return {
-        type: actionTypes.NAV,
-        payload: pagesCopy,
-    }
+	return {
+		type: actionTypes.NAV,
+		payload: pagesCopy,
+	};
 }
 
 export function changeIsTransitioning(isTransitioning) {
@@ -37,7 +34,7 @@ export function changeIsTransitioning(isTransitioning) {
 	return {
 		type: actionTypes.IS_TRANSITIONING,
 		payload: isTransitioning
-	}
+	};
 
 }
 
@@ -73,7 +70,7 @@ export function changeScrollPages(currentPage) {
 	return {
 		type: actionTypes.SCROLL_PAGES,
 		payload: currentPages
-	}
+	};
 }
 
 export function calcNavDirection(prevPage, toPage) {
@@ -89,7 +86,7 @@ export function calcNavDirection(prevPage, toPage) {
 	return {
 		type: actionTypes.NAV_DIRECTION,
 		payload: pageDir
-	}
+	};
 
 }
 
@@ -98,7 +95,7 @@ export function changeCurrentPages(currentPages) {
 	return {
 		type: actionTypes.CURRENT_PAGES,
 		payload: currentPages
-	}
+	};
 }
 
 export function changeNavDisabled(isDisabled) {
@@ -106,5 +103,5 @@ export function changeNavDisabled(isDisabled) {
 	return {
 		type: actionTypes.NAV_DISABLED,
 		payload: isDisabled
-	}
+	};
 }

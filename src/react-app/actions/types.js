@@ -1,6 +1,5 @@
 export const SAMPLE_TYPE = 'SAMPLE';
 export const NAV = 'NAV';
-export const MEDIA_SIZE = 'MEDIA_SIZE';
 export const CURRENT_PAGES = 'CURRENT_PAGES';
 export const NAV_DIRECTION = 'NAV_DIRECTION';
 export const NAV_DISABLED = 'NAV_DISABLED';

@@ -1,5 +1,6 @@
 import React from 'react';
-//the IndexRoute is helper that behaves like a route but will be shown when the url lines up with the parent
+//the IndexRoute is helper that behaves like a route but will 
+//be shown when the url lines up with the parent
 //but not one of the children
 import { Route, IndexRoute } from 'react-router';
 
@@ -7,7 +8,7 @@ import { Route, IndexRoute } from 'react-router';
 import App from './components/App';
 import View from './components/View';
 // import ViewIndex from './components/views/ViewIndex';
-import ViewInternal from './components/views/ViewInternal';
+// import ViewInternal from './components/views/ViewInternal';
 
 //<Route path="posts/:id" component={PostsShow} />
 export default (

@@ -1,21 +1,17 @@
-import _ from 'lodash';
 import * as actionTypes from '../actions/types';
 import INITIAL_STATE from '../data/pages';
 
 
-function reducerNav (state = INITIAL_STATE, action) {
+function reducerNav(state = INITIAL_STATE, action) {
+	switch(action.type) {
 
-	let stateCopy = [];
+		case actionTypes.NAV:
 
-  switch(action.type) {
+		return action.payload;                              
 
-    case actionTypes.NAV:
+		default:
 
-    	return action.payload;                              
-
-    default:
-    
-        return state;
-  }
+		return state;
+	}
 }
 export default reducerNav;

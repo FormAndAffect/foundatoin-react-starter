@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actions from '../actions/nav';
-import { hashHistory } from 'react-router';
 
 //utilities
-import { toggleClass } from '../lib/utils.js';
-var browser = require('browser-size')();
 import * as Hammer from 'hammerjs';
-import _ from 'lodash';
 
 //components
 import NavComponent from './NavComponent';
@@ -31,7 +27,6 @@ class Nav extends Component {
     this.main = null; 
     this.firstPage = '';
     this.lastPage = '';
-
   }
 
   componentWillMount() {
@@ -48,21 +43,45 @@ class Nav extends Component {
 
     //prevent scrollbars
     //document.documentElement.style.overflow = 'hidden';  // firefox, chrome
-    document.body.scroll = "no"; // ie only
-
+    document.body.scroll = 'no'; // ie only
   }
 
   componentWillUnmount() {
     //remove event listeners
-    if (this.docBody.removeEventListener) {
+    if(this.docBody.removeEventListener) {
       // IE9, Chrome, Safari, Opera
-      this.docBody.removeEventListener("mousewheel", this.onMouseWheelChange.bind(this), false);
+      this.docBody.removeEventListener('mousewheel', this.onMouseWheelChange.bind(this), false);
       // Firefox
-      this.docBody.removeEventListener("DOMMouseScroll", this.onMouseWheelChange.bind(this), false);
+      this.docBody.removeEventListener('DOMMouseScroll', this.onMouseWheelChange.bind(this), false);
     }
-    this.main.removeEventListener("touchmove", this.onDrag);   
-    this.main.removeEventListener("touchstart", this.onDragStart);
+    this.main.removeEventListener('touchmove', this.onDrag);   
+    this.main.removeEventListener('touchstart', this.onDragStart);
+  }
 
+  //-----------------------------------------------------------------------------// 
+  //events
+  //-----------------------------------------------------------------------------//
+
+  onOptionClick(option) {
+    //if selected the current page again, do nothing
+    if(this.props.currentPages[1] !== option) {
+      //reset all items first
+      this.props.nav.map((item) => {
+        this.props.changeNav(item.id, false);
+      });
+
+      //set the current nav item
+      this.props.changeNav(option, true);
+
+      //update the nav direction (prev-page, to-page)
+      this.props.calcNavDirection(this.props.currentPages[1], option);
+
+      this.setState({ currentPage: option }, () => {
+        //turn this off and include it in onSwipeComplete and onMobileSwipeComplete
+        //to have transition happen after swipe but must find way to fade out current page first
+        this.props.changeCurrentPage(this.state.currentPage);
+      });
+    }
   }
 
 
@@ -70,21 +89,8 @@ class Nav extends Component {
   //handle mouse scroll
   //-----------------------------------------------------------------------------//
 
-  setupMouse() {
-    //add event listeners
-    if (this.docBody.addEventListener) {
-      // IE9, Chrome, Safari, Opera
-      this.docBody.addEventListener("mousewheel", this.onMouseWheelChange.bind(this), false);
-      // Firefox
-      this.docBody.addEventListener("DOMMouseScroll", this.onMouseWheelChange.bind(this), false);
-    }
-    // IE 6/7/8
-    else this.docBody.attachEvent("onmousewheel", this.onMouseWheelChange.bind(this));
-  }
-
 
   onMouseWheelChange(e) {
-
     e.preventDefault();
 
     //console.log('animating: ', this.animating );
@@ -94,9 +100,9 @@ class Nav extends Component {
       // cross-browser
       e = window.event || e;
       // capture the wheel delta and force it to either 1 or -1
-      var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-      var speed = 1;
-      var delta = delta * speed;
+      let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+      let speed = 1;
+      delta = delta * speed;
 
       //if going down, and it's not on the last page...
       if(delta === -1 && (this.props.currentPages[1] !== this.lastPage)) {
@@ -106,11 +112,21 @@ class Nav extends Component {
       } else if (delta === 1 && (this.props.currentPages[1] !== this.firstPage)) {
        //scroll up, change page
         this.onOptionClick(this.props.scrollPages[0]);
-
       }
-
     }
+  }
 
+  setupMouse() {
+    //add event listeners
+    if(this.docBody.addEventListener) {
+        // IE9, Chrome, Safari, Opera
+        this.docBody.addEventListener('mousewheel', this.onMouseWheelChange.bind(this), false);
+        // Firefox
+        this.docBody.addEventListener('DOMMouseScroll', this.onMouseWheelChange.bind(this), false);
+      } else {
+        // IE 6/7/8
+        this.docBody.attachEvent('onmousewheel', this.onMouseWheelChange.bind(this));
+      }
   }
 
   //-----------------------------------------------------------------------------// 
@@ -118,32 +134,27 @@ class Nav extends Component {
   //-----------------------------------------------------------------------------//
 
   setupDrag() {
-
     this.main = document.querySelector('#pt-main');
     //when dragging
-    this.main.addEventListener("touchmove", this.onDrag.bind(this));   
+    this.main.addEventListener('touchmove', this.onDrag.bind(this));   
     //on drag start
-    this.main.addEventListener("touchstart", this.onDragStart.bind(this));
+    this.main.addEventListener('touchstart', this.onDragStart.bind(this));
 
     //Hammer time
-    let mc = Hammer.default(this.main);
+    const mc = Hammer.default(this.main);
     mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
-    mc.on("swipeup", this.onSwipeUp.bind(this));
-    mc.on("swipedown", this.onSwipeDown.bind(this));
-
+    mc.on('swipeup', this.onSwipeUp.bind(this));
+    mc.on('swipedown', this.onSwipeDown.bind(this));
   }                                                 
 
   onDragStart(evt) {
-
     //evt.preventDefault();
     this.xDown = evt.touches[0].clientX;                                     
     this.yDown = evt.touches[0].clientY;
-
-  };
+  }
 
 
   onDrag(evt) {
-
     //prevent the entire page from moving with the drag
     evt.preventDefault();
     //stop bubling up
@@ -162,7 +173,6 @@ class Nav extends Component {
     if(this.props.currentPages[1] !== this.firstPage) {
       this.onOptionClick(this.props.scrollPages[0]);
     }
-
   }
 
 
@@ -171,48 +181,20 @@ class Nav extends Component {
   //-----------------------------------------------------------------------------//
 
 
-  onOptionClick(option) {
-
-    //if selected the current page again, do nothing
-    if(this.props.currentPages[1] !== option) {
-
-      //reset all items first
-      this.props.nav.map((item) => {
-        this.props.changeNav(item.id, false);
-      });
-
-      //set the current nav item
-      this.props.changeNav(option, true);
-
-      //update the nav direction (prev-page, to-page)
-      this.props.calcNavDirection(this.props.currentPages[1], option);
-
-      this.setState({currentPage: option}, () => {
-        //turn this off and include it in onSwipeComplete and onMobileSwipeComplete
-        //to have transition happen after swipe but must find way to fade out current page first
-        this.props.changeCurrentPage(this.state.currentPage);
-      });
-    }
-
-  }
-
   renderButtons() {
-
     let that = this;
-    let buttonList = this.props.navItems.map(function(item) {
+    let buttonList = this.props.navItems.map((item) => {
       return(
               <NavComponent
                 key={item.id}
                 name={item.name} 
                 onClickProp={that.onOptionClick.bind(that, item.id)}
-                isActive={item.isSet ? "active" : ""}
+                isActive={item.isSet ? 'active' : ''}
                 classProp={`${item.class}`}
               />
-        )
+        );
     });
-
     return buttonList;
-
   }
 
   render() {
