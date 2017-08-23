@@ -17,6 +17,7 @@ import fs from 'fs';
 import webpack from 'webpack';
 import gutil from 'gulp-util';
 import webpackConfig from './webpack.config.js';
+import webpackProdConfig from './webpack.production.config.js';
 import WebpackDevServer from 'webpack-dev-server';
 
 //for running shell scripts
