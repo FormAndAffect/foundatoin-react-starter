@@ -1,9 +1,13 @@
-import fs from 'fs';
-import yaml from 'js-yaml';
-// import webpack from 'webpack';
+// import fs from 'fs';
+// import yaml from 'js-yaml';
+const fs = require('fs');
+const yaml = require('js-yaml')
 
 const absPath = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+
 
 //Load settings from settings.yml
 const { PATHS } = loadConfig();
@@ -13,75 +17,101 @@ function loadConfig() {
   return yaml.load(ymlFile);
 }
 
+//define packages, each string is name of package to include in vendor files
+//that don't update very often
+const VENDOR_LIBS = [ 
+"axios",
+"foundation-sites",
+"hammerjs",
+"html-escape",
+"lodash",
+"mapbox-gl",
+"react",
+"react-dom",
+"react-dropzone",
+"react-mapbox-gl",
+"react-redux",
+"react-router-dom",
+"react-router-redux",
+"react-select",
+"react-share",
+"react-transition-group",
+"redux",
+"redux-form",
+"redux-thunk",
+"sanitize-filename",
+"what-input"
+ ]
 
 module.exports = {
-
-      
-
-      //context: __dirname,
-      //configuration
-      entry: './src/react-app/app.js',
-      output: {
-        // options related to how webpack emits results
-
-        path: absPath.resolve(__dirname, PATHS.dist + '/assets/js'), // string
-        // the target directory for all output files
-        // must be an absolute path (use the Node.js path module)
-
-        //publicPath: './assets/',
-
-        filename: "react.js", // string
-        // the filename template for entry chunks
-
-        //publicPath: "dist/", // string
-        // // the url to the output directory resolved relative to the HTML page
-
+  //split up the entries
+  entry: {
+    react: './src/react-app/app.js',
+    vendor2: VENDOR_LIBS
+  },
+  output: {
+    path: absPath.resolve(__dirname, PATHS.dist + '/assets/js'),
+    //location of bundle in relation to index.html
+    publicPath: '/assets/js/',
+    //output is: react.<hash>.js and vendor2.<hash>.js (hash to let know if file changed)
+    filename: '[name].[chunkhash].js'
+  },
+  module: {
+    // rules for modules (configure loaders, parser options, etc.)
+    rules: [
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader'
       },
-      // watch: true,
-      module: {
-        // rules for modules (configure loaders, parser options, etc.)
-        rules: [
-          {
-            test: /\.(js|jsx)$/,
-            use: 'babel-loader',
-          }
-        ]
-      },
-      //just need this to concat to it in gulpfile
-      // plugins: [],
-      // plugins: [['transform-es2015-classes', {loose: true}]],
-      //https://github.com/babel/babel/issues/3041
-      plugins:[
-      
-      //   new webpack.DefinePlugin({
-      //     'process.env':{
-      //       'NODE_ENV': process.env.NODE_ENV
-      //     }
-      //   }),
-
-        new webpack.DefinePlugin({
-          "process.env": { 
-             NODE_ENV: JSON.stringify("production") 
-           }
-        }),
-
-        new webpack.optimize.UglifyJsPlugin({
-          compress:{
-            warnings: true
-          }
-        })
-      ],
-
-      devtool: "source-map",
-
-      // devServer: {
-      //   contentBase: absPath.resolve(__dirname, "dist"),
-      //   compress: true,
-      //   port: 8080,
-      //   hot: true
-      // },
-
-      watch: true,
-
-
-}
+      {
+        test: /\.(js|jsx)$/,
+        loaders: 'babel-loader',
+        // options: { presets: ["react", "es2015"] },
+        // exclude: absPath.resolve(__dirname, "node_modules")
+        include: [
+                    absPath.resolve(__dirname, "src/react-app"),
+                    absPath.resolve(__dirname, 'node_modules/foundation-sites'),
+                  ]
+      }
+    ]
+  },
+  externals: {
+      // enable jQuery as an external script to use in imports
+      jquery: "jQuery"
+  },
+  resolve: {
+    // how imports are resolved, example import 'my-module' = import 'my-module.js'
+    extensions: ['.js', '.jsx', '.json'],
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env": { 
+         NODE_ENV: JSON.stringify("production"),
+         TEST_VAR: JSON.stringify('http://yougotit')
+       }
+    }),
+    //look at the total output of imports and pull out any duplicates to only
+    //include in the 'vendor2' bundle. Create a manifest.js file to let browser know if vendor file actually got changed
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendor2', 'manifest']
+    }),
+    new HtmlWebpackPlugin({
+      //the template file to use
+      template: './src/react-app/index.html',
+      //two steps out of the bundle directory
+      filename: '../../index.html'
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false,
+            // don't optimize comparisons or 
+            //will cause error with mapbox
+            comparisons: false,  
+        },
+    }),
+    new webpack.ProvidePlugin({
+      //for promises to work for ie11
+      Promise: 'es6-promise-promise',
+    }),
+  ],
+};

@@ -1,20 +1,176 @@
-// fonts 
+/* ==========================================================================
+mixins
+========================================================================== */
 
-$primary-font: 'Sintony', sans-serif;
+//usage: @include h-align-absolute(90px);
 
-// border radius
-@mixin border-radius($radius:.25em) {
-  border-radius: $radius;
+//horizontal align absolute positioned items
+@mixin h-align-absolute($width) {
+  position: absolute;
+  width: $width;
+  left:50%;
+  margin-left: #{-($width/2)};
 }
 
-// antialiasing mode font rendering
-
-@mixin font-smoothing {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+//vertical align absolute positioned items
+@mixin v-align-absolute($height) {
+  position: absolute;
+  top:50%;
+  margin-top: #{-($height/2)};
 }
 
-/***** layout*****/
+// card grid breakpoints
+// use:   
+// @include MQ(M) {
+//    display: none;
+//  }
+$S:     820px; 
+$M:     1460px;     
+$L:     1865px;
+
+@mixin MQ($canvas) {
+  @if $canvas == S {
+   @media only screen and (min-width: $S) { @content; } 
+  }
+  @else if $canvas == M {
+   @media only screen and (min-width: $M) { @content; } 
+  }
+  @else if $canvas == L {
+   @media only screen and (min-width: $L) { @content; } 
+  }
+}
+
+//using foundation breakpoints
+// @include breakpoint(large down) {
+//  ...
+// }
+
+//modal
+@mixin modal($max-width, $pading-vertical, $padding-horizontal) {
+  background: $white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  //padding: 2.5em 4em;
+  padding: $pading-vertical $padding-horizontal;
+  flex-basis: $max-width;
+  margin: auto;
+  width: 100%;
+  @media (max-width: $max-width) {
+    padding: 1em 0.7em;
+    flex-basis: 100%;
+  }
+}
+
+
+/* ==========================================================================
+extends
+========================================================================== */
+//usage: @extend %shadow-box
+
+%shadow-box {
+    border-radius: $corner-roundness;
+    box-shadow: $dark-shadow;
+}
+
+/*horizontal/vertical align*/
+%align-parent {
+    transform-style: preserve-3d;
+}
+%h-align-child {
+    position: relative;
+    left:50%;
+    transform: translateX(-50%);
+}
+%v-align-child {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+//flexbox vertical align
+%fb-v-align {
+  display: flex;
+  align-items: center;
+}
+
+%kill-outline {
+    outline: none;
+    border: none;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+%button-base {
+  color: $white;
+  @extend %kill-outline;
+  text-transform: uppercase;
+  font-weight: 900;
+  font-family: $body-font;
+  cursor: pointer;
+}
+
+%bold-base {
+  font-family: $body-font;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: $title-font-color;
+}
+
+%body-font-base {
+  font-family: $body-font;
+  text-transform: none;
+  font-weight: 300;
+  color: $title-font-color;
+}
+
+%copy-button-style {
+  //@include button($expand, $background, $background-hover, $color, $style);
+  @include button(false, $primary-color, $primary-color, $white, solid);
+  @extend %button-base;
+}
+
+%border-light {
+  border: 1px solid $light-border-color;
+}
+
+%boxed-card {
+  @extend %border-light;
+  background: $white;
+}
+
+%button-sml {
+  font-size: $small-font-size;
+  background: transparent;
+  color: $title-font-color;
+  @extend %kill-outline;
+  text-transform: uppercase;
+  font-weight: 900;
+  font-family: $body-font;
+}
+
+%button-wide-padding {
+  padding: 1rem 4.3rem;
+}
+
+%input-lg {
+  padding: $large-input-padding;
+  font-size: 1.3em;
+  height: auto;
+}
+
+%medium-title {
+  font-family: $body-font;
+  font-size: 1.3em;
+  font-weight: 900;
+}
+
+%long-margin-title {
+  margin-bottom: 2.5em;
+}
+
+
+/* ==========================================================================
+global-styles
+========================================================================== */
 
 *, *::after, *::before {
   box-sizing: border-box;
@@ -24,288 +180,208 @@ html, body {
    //prevent scroll on iphone
    height: 100%;
    width: 100%;
-   overflow: hidden !important;
-   position: relative !important;
-   position: fixed;
+   position: relative;
+   // position: fixed;
+   // overflow: hidden;
 }
 
-//make all wrappers full page
-.site-container, .app, .app > div, 
-.app > div > .component-wrapper,
-.app > div > .component-wrapper > div,
-.page-wrapper-outer
+a, a:link, a:visited, a:hover, a:active {
+    text-decoration: none !important;
+    color: $primary-color;
+}
+
+h1 {
+  font-family: 'nobelbold';
+}
+
+h1, h2, h3, h4 {
+  text-transform: uppercase;
+}
+
+h3 {
+  font-weight: 600;
+}
+
+hr {
+  border-bottom: $dashed;
+}
+
+label {
+  text-transform: uppercase;
+  padding: 0 0 1.25rem;
+}
+
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], 
+[type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], 
+[type='url'], [type='color'], textarea {
+  margin-bottom: 0;
+}
+
+.input-group-button a, .input-group-button input, .input-group-button button, .input-group-button label
 {
-  height: 100%;
+  font-size: 1.3rem;
+  padding: 1rem 2rem;
+  height: auto;
+}
+
+.button {
+  @extend %button-base;
+  font-size: 1.3rem;
+  &.secondary {
+    color: #BBBBBB;
+  }
+}
+
+.error_message, .errors li {
+  color: $alert-color;
+  font-weight: 300;
+  text-transform: none;
+  list-style-type: none;
+}
+.errors {
+  margin: 0;
+}
+
+input.submit-button, button.submit-button {
+  @extend %button-wide-padding;
+  float: left;
+  margin-top: 3em;
+}
+
+@media print {
+    .no-print { display: none; }
+} 
+
+/* ==========================================================================
+helper classes
+========================================================================== */
+
+/*horizontally align*/
+
+.align-parent {
+    transform-style: preserve-3d;
+}
+
+/*horizontal align*/
+
+.h-align-child {
+    position: relative;
+    left:50%;
+    transform: translateX(-50%);
+}
+
+/*vertical align*/
+
+.v-align-child {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.bold-base {
+  @extend %bold-base;
+}
+
+/* ==========================================================================
+//accessibility
+========================================================================== */
+
+/* default styling before what input executes, and mouse activated focus */
+*:focus, [data-whatinput="mouse"] :focus {
+  //outline: 0px;
+  outline-style: hidden;
+  outline: none;
+}
+
+/* keyboard */
+[data-whatinput="keyboard"] :focus {
+  outline-style: dashed;
+    outline-color: yellow;
+}
+
+/* ==========================================================================
+page layout
+========================================================================== */
+
+.site-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  &.internal {
+    padding-top: $header-height;
+  }
+}
+
+.page-content {
+  flex: 1;
+  padding-top: $page-gutter;
+  padding-bottom: $page-gutter;
+  .page-content-inner {
+    padding: 0 1.5em;
+  }
+}
+
+/* ==========================================================================
+header
+========================================================================== */
+
+#header {
+  min-height: $header-height;
+  background: rgba(0,0,0, 0.8);
+  display: flex;
+  align-items: center;
+  position: absolute;
+  z-index: 1;
   width: 100%;
-}
-
-/********************
-Loader
-********************/
-
-.loader-bg {
-	// position: absolute;
-	// width: 100vw;
-	// height: 100vh;
-	// z-index: 10;
-}
-
-.loader-initial {
-  visibility: visible;
-  opacity: 1;
-  position: absolute;
-  top: 50%;
-  left: 48%;
-  z-index: 10;
-  .line {
-  	margin: 0;
-  }
-}
-
-.loader {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 48%;
-  z-index: 10;
-}
-
-.line {
-  animation: expand 1s ease-in-out infinite;
-  border-radius: 10px;
-  display: inline-block;
-  transform-origin: center center;
-  margin: 0 2px;
-  width: 1px;
-  height: 16px;
-}
-
-.line:nth-child(1) {
-  background: darken($dark-gray,35%);
-}
-
-.line:nth-child(2) {
-  animation-delay: 180ms;
-  background: $red;
-}
-
-.line:nth-child(3) {
-  animation-delay: 360ms;
-  background: $white;
-}
-
-.line:nth-child(4) {
-  animation-delay: 540ms;
-  background: $red;
-}
-
-.line:nth-child(5) {
-  animation-delay: 720ms;
-  background: darken($dark-gray,35%);
-}
-
-@keyframes expand {
-  0% {
-    transform: scale(1);
-  }
-  25% {
-    transform: scale(2);
-  }
-}
-
-/********************
-Nav
-********************/
-
-@-webkit-keyframes pulse {
-    0% { -webkit-transform: scale(1); }
-    50% { -webkit-transform: scale(2); }
-    150% { -webkit-transform: scale(1); }
-}
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(2); }
-    150% { transform: scale(1); }
-}
-
-.nav{
-  	position:fixed;
-	z-index:99999999;
-  	top:50%;
-  	right:15px;
-  	transform:translateY(-50%);
-	@media (min-width: 768px) {right:30px;}
-	.dot {
-		display:block;
-      	border:1px solid $white;
-      	background:$red;
-      	margin-bottom:16px;
-      	border-radius:50%;
-      	width:8px;
-      	height:8px;
-      	cursor:pointer;
-      	color:$white;
-      	text-decoration:none;
-		position:relative;
-		opacity:0.6;
-		&:first-child {
-			animation-name: pulse;
-			animation-duration: 0.66s;
-			animation-iteration-count: 5;
-			animation-delay: 0.3s;
-			animation-timing-function: ease-out; 
-		}
-		
-		&:hover, span{transition:all 200ms ease; opacity:1}
-		&:hover, &.active {background:$red;transform:scale(1.4);}
-		span {
-        	font-size:8px;
-        	display:block;
-			text-transform:uppercase;
-        	transform:translate(-12px, -2px);
-        	opacity:1;
-			position: absolute;
-    		right: 0;
-			color:$medium-gray;
-			&:hover, &.active {
-          	opacity:1;
-			color:$medium-gray;
-          	transform:translateX(-10px);
-        	}
-      	}	
-		&:active, &.active{transform:scale(1.8);border:solid 1px $red; background:$white;opacity:0.8; outline:none;}
-		&:focus {outline:none;}
-
-	}  
-}
-
-
-/********************
-//page content animations
-********************/
-
-// .will-reveal.show {
-// 	visibility: visible !important;
-// 	opacity: 1 !important;
-// }
-
-.will-move {
-	visibility: hidden;
-	opacity: 0;
-}
-
-.will-reveal {
-	visibility: hidden;
-	opacity: 0;
-    transform: scale(0.7);
-}
-
-.fromTop {transform-origin: top left;}
-.fromRight {transform-origin: center right;}
-.fromBottom {transform-origin: center bottom;}
-.fromLeft {transform-origin: center left;}
-
-/* -------------------------------- 
-Page transitions
--------------------------------- */
-
-.pt-page {
-  .page-wrapper {
-    width: 100%;
-    height: 100%;
-    .page-content {
-      //hide at first to fade in
-      visibility: hidden;
-      overflow: hidden;
+  .menu-container {
+    @extend %fb-v-align;
+    ul {
+      height: $header-height;
     }
   }
-
-}
-
-
-
-/* -------------------------------- 
-
-page transitions
-
--------------------------------- */
-
-.pt-perspective {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.pt-page {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  visibility: hidden;
-  overflow: hidden;
-  backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-}
-
-.pt-page-current,
-.no-js .pt-page {
-  visibility: visible;
-}
-
-.no-js body {
-  overflow: auto;
-}
-
-.pt-page-ontop {
-  z-index: 999;
-}
-//tha back of the page transition
-.page-wrapper-outer {
-  
-  .page1 {
-    background: $red;
+  .logo-main {
+    margin: 0;
+    padding: 0;
+    display: block;
+    line-height: 0;
+    font-size: inherit;
+    img {
+      min-width: 190px;
+    }
   }
-  .page2 {
-    background: $dark-gray;
+}
+
+/* ==========================================================================
+footer
+========================================================================== */
+
+#footer {
+  min-height: $header-height;
+  background: rgba(0,0,0, 0.8);
+}
+
+/* ==========================================================================
+static pages
+========================================================================== */
+
+/*
+home page
+================================ */
+
+#hero {
+  .hero-bg {
+    background: url(../img/hero.jpg) no-repeat left center;
+    background-size: cover;
+    width: 100vw;
+    height: 740px;
+    transform-style: preserve-3d;
+    .hero-title {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translateY(-50%);
+      transform: translateX(-50%);
+      padding: 0 2em;
+    }
   }
-  .page3 {
-    background: $white;
-  }
-
 }
-
-//animations------------/
-
-.pt-page-moveToTop {
-  -webkit-animation: moveToTop .6s ease both;
-  animation: moveToTop .6s ease both;
-}
-
-.pt-page-moveToBottom {
-  -webkit-animation: moveToBottom .6s ease both;
-  animation: moveToBottom .6s ease both;
-}
-
-.pt-page-scaleUp {
-  -webkit-animation: scaleUp .7s ease both;
-  animation: scaleUp .7s ease both;
-}
-
-@keyframes moveToTop {
-  from { }
-  to { -webkit-transform: translateY(-100%); transform: translateY(-100%); }
-}
-
-@keyframes moveToBottom {
-  from { }
-  to { -webkit-transform: translateY(100%); transform: translateY(100%); }
-}
-
-@keyframes scaleUp {
-  from { opacity: 0; -webkit-transform: scale(.8); transform: scale(.8); }
-}
-

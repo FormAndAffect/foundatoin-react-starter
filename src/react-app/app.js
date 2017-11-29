@@ -1,40 +1,69 @@
+/* ==========================================================================
+load foundation plugins - keep this
+========================================================================== */
+import $ from 'jquery';
+import whatInput from 'what-input';
+window.$ = $;
+// import Foundation from 'foundation-sites';
+// If you want to pick and choose which modules to include, 
+// comment out the above and uncomment the line below
+import './lib/foundation-explicit-pieces';
+$(document).foundation(); 
+
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-// the browserHistory object specifies what part of the url react-router cares about
-// this is different than the History module import that comes along with 
-// react-router when it's installed
-// browserHistory cares about everything after the / in the url (posts/5):
-// www.blog.com/posts/5
-// we could use hashHistory for example would care about this:
-// www.blog.com/#posts/5
-import { Router, hashHistory } from 'react-router';
+import customHistory from './history';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import reduxThunk from 'redux-thunk';
+import asyncComponent from './lib/async_component';
+
+import Main from './components/main';
+import Page from './components/page';
 import reducers from './reducers';
-import routes from './routes';
+import { PrefixerProvider, withPrefixer } from 'react-prefixer-provider';
 
+const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
+const store = createStoreWithMiddleware(reducers);
 
-//using redux dev tools (chrome plugin version)
-const store = createStore(reducers, composeWithDevTools(
-  applyMiddleware()
-  // other store enhancers if any
-));
+//asyncronous component
+// const my_component = asyncComponent(() => 
+//   System.import('./components/my_component').then(module => module.default)
+// )
 
-//without middleware
-//const createStoreWithMiddleware = applyMiddleware()(createStore);
-//<Provider store={createStoreWithMiddleware(reducers)}>
+// This prefixes everything with the webkit prefix. 
+const myPrefixer = (styles) => {
+  const prefixed = {}
+  for (let key in styles) {
+    prefixed["Webkit" + key[0].toUpperCase() + key.substr(1)] = styles[key]
+  }
+  return prefixed
+}
 
-//if using reduxThunk...
-// import reduxThunk from 'redux-thunk';
-// const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
-//<Provider store={createStoreWithMiddleware(reducers)}>
+//Header needs to be a pathless Route so it updates when 
+//the route changes and use props.history
+//<Route history={customHistory} component={Header} />
+
+//note the "exact" in routes that don't have a query parameter
+
+//path="/:id"  accessed by: props.match.params.id
+ReactDOM.render(
+  <PrefixerProvider prefixer={myPrefixer}>
+  <Provider store={store}>
+    <BrowserRouter history={customHistory}>
+      <div>
+       <Switch history={customHistory}>
+          {/* website */}
+          <Route history={customHistory} exact path="/" component={withPrefixer(Main)} />
+          <Route history={customHistory} path="/:id" component={Page} />
+        </Switch> 
+      </div>  
+    </BrowserRouter>
+  </Provider>
+  </PrefixerProvider>
+  , document.querySelector('.app-container'));
 
 //export store for use with redux-watch
 export { store };
-
-ReactDOM.render(
-  <Provider store={store}>
-    <Router history={hashHistory} routes={routes} />
-  </Provider>
-  , document.querySelector('.app'));

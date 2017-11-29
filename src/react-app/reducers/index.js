@@ -1,19 +1,10 @@
 import { combineReducers } from 'redux';
-import reducerNav from './reducerNav';
-import reducerCurrentPages from './reducerCurrentPages';
-import reducerNavDirection from './reducerNavDirection';
-import reducerNavDisabled from './reducerNavDisabled';
-import reducerScrollPages from './reducerScrollPages';
-import reducerIsTransitioning from './reducerIsTransitioning';
-
+import { reducer as form } from 'redux-form';
+import reducerTest from './reducerTest';
 
 const rootReducer = combineReducers({
-  nav: reducerNav,
-  currentPages: reducerCurrentPages,
-  navDirection: reducerNavDirection,
-  navDisabled: reducerNavDisabled,
-  scrollPages: reducerScrollPages,
-  isTransitioning: reducerIsTransitioning
+  form,
+  test: reducerTest,
 });
 
 export default rootReducer;
