@@ -89,23 +89,8 @@ module.exports = {
     // }),
   ],
   devServer: {
-    //use the below to serve index.html in place of any 404s
-    //historyApiFallback: true,
-    historyApiFallback: {
-      rewrites: [
-        // shows /index.html as the landing page
-        { from: /^\/$/, to: '/index.html' },
-        // shows /index.html for all routes starting with /test-rewrite
-        { from: /^\/test-rewrite.*/, to: '/index.html' },
-        // shows views/404.html on all other pages
-        // { from: /./, to: '/views/404.html' }
-      ]
-    },
-    //location of index.html file
-    contentBase: absPath.resolve(__dirname, PATHS.dist),
-    hot: true,
-    //location of bundle in relation to index.html (to enable serve from memory)
-    publicPath: '/assets/js/',
+    //dev server is actually located in the gulpfile since we're
+    //running it using gulp instead of through webpack
   },
   devtool: "source-map",
   // devtool: "eval",

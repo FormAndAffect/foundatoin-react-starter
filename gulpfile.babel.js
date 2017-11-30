@@ -63,7 +63,7 @@ const staticFileGlobs = [
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel([pages, sass, javascript, vendorJavascript, webpackBuild, images, copy, copyManifest]), generateServiceWorker));
+ gulp.series(clean, gulp.parallel([pages, sass, javascript, vendorJavascript, headJavascript, webpackBuild, images, media, favicons]), generateServiceWorker));
 
 // Build the site, run the server, then watch for file changes, and run webpack(with dev server)
 gulp.task('default',
@@ -117,7 +117,6 @@ function webpackBuild() {
   } else {
       return gulp.src(PATHS.react)
        .pipe(named())
-       // .pipe($.sourcemaps.init())
        .pipe(webpackStream(webpackConfig, webpack))
        .pipe(gulp.dest(PATHS.dist + '/assets/js'));
   }
@@ -179,20 +178,32 @@ function clean(done) {
 }
 
 // Copy files out of the assets/media folder
-function copy() {
+function media() {
   return gulp.src(PATHS.media)
     .pipe(gulp.dest(PATHS.dist + PATHS.distAssets + '/media'));
 }
 
-//Copy the app manifest
-function copyManifest() {
-  return gulp.src(PATHS.manifest)
-    .pipe(gulp.dest(PATHS.dist));
+// Copy files out of the assets/favicons folder
+// * app manifest and browserconfig file is also included in there
+function favicons() {
+  return gulp.src(PATHS.favicons)
+    .pipe(gulp.dest(PATHS.dist + '/'));
 }
 
-// Copy assets/js/vendor.js
+// Combine vendor js into one file
 function vendorJavascript() {
   return gulp.src(PATHS.vendor)
+    .pipe($.concat('vendor.js'))
+    .pipe($.if(PRODUCTION, $.uglify()
+      .on('error', e => { console.log(e); })
+    ))
+    .pipe(gulp.dest(PATHS.dist + PATHS.distAssets + '/js'))
+}
+
+// Combine head js into one file
+function headJavascript() {
+  return gulp.src(PATHS.head)
+    .pipe($.concat('head.js'))
     .pipe($.if(PRODUCTION, $.uglify()
       .on('error', e => { console.log(e); })
     ))
@@ -269,7 +280,6 @@ function javascript() {
     //this makes sure the output js file isn't hashed
     .pipe(named())
     .pipe($.sourcemaps.init())
-    // .pipe($.babel({ignore: ['what-input.js']}))
     .pipe(webpackStream(simpleWebpackConfig, webpack))
     .pipe($.if(PRODUCTION, $.uglify()
       .on('error', e => { console.log(e); })
@@ -311,10 +321,12 @@ function rsyncTemplates(done) {
 
 //watch for html page changes
 function watch() {
-  gulp.watch(PATHS.media, copy);
+  gulp.watch(PATHS.media, media);
+  gulp.watch(PATHS.favicons, favicons);
   gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass));
-  gulp.watch('src/assets/js/app.js').on('all', gulp.series(javascript));
-  gulp.watch('src/assets/js/vendor.js').on('all', gulp.series(vendorJavascript));
+  gulp.watch('src/assets/js/app/**/*.js').on('all', gulp.series(javascript));
+  gulp.watch('src/assets/js/vendor/**/*.js').on('all', gulp.series(vendorJavascript));
+  gulp.watch('src/assets/js/head/**/*.js').on('all', gulp.series(headJavascript));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images));
 }
 
@@ -328,9 +340,10 @@ function watchPages() {
 function watchProduction() {
   //watch assets
   //gulp.watch('src/pages/**/*.html').on('all', gulp.series(pages, rsyncTemplates)); 
-  gulp.watch(PATHS.media, copy);
+  gulp.watch(PATHS.media, media);
   gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass, rsyncAssets));
-  gulp.watch('src/assets/js/app.js').on('all', gulp.series(javascript, rsyncAssets));
-  gulp.watch('src/assets/js/vendor.js').on('all', gulp.series(vendorJavascript, rsyncAssets));
+  gulp.watch('src/assets/js/app/**/*.js').on('all', gulp.series(javascript, rsyncAssets));
+  gulp.watch('src/assets/js/vendor/**/*.js').on('all', gulp.series(vendorJavascript, rsyncAssets));
+  gulp.watch('src/assets/js/head/**/*.js').on('all', gulp.series(headJavascript, rsyncAssets));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, rsyncAssets));
 }

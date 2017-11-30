@@ -37,13 +37,16 @@ PATHS:
     - "src/assets/favicons/**/*"
   # Paths to JavaScript libraries, which are combined into one file
   vendor:
-    - "src/assets/js/vendor.js"
+    - "src/assets/js/vendor/*.js"
   # Paths to Sass libraries, which can then be loaded with @import
   javascript:
-  # external js file
-    - "src/assets/js/app.js"
+  # entry for external js file
+    - "src/assets/js/app/app.js"
   # react entry js file
   react:
     - "src/react-app/app.js"
+  # js files to insert into the head
+  head:
+    - "src/assets/js/head/*.js"
   manifest:
     - "src/manifest/manifest.json"

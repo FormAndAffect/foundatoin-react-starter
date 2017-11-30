@@ -20,26 +20,16 @@ function loadConfig() {
 //define packages, each string is name of package to include in vendor files
 //that don't update very often
 const VENDOR_LIBS = [ 
-"axios",
 "foundation-sites",
-"hammerjs",
-"html-escape",
-"lodash",
-"mapbox-gl",
 "react",
 "react-dom",
-"react-dropzone",
-"react-mapbox-gl",
 "react-redux",
 "react-router-dom",
 "react-router-redux",
-"react-select",
-"react-share",
 "react-transition-group",
 "redux",
 "redux-form",
 "redux-thunk",
-"sanitize-filename",
 "what-input"
  ]
 
@@ -47,13 +37,13 @@ module.exports = {
   //split up the entries
   entry: {
     react: './src/react-app/app.js',
-    vendor2: VENDOR_LIBS
+    modules: VENDOR_LIBS
   },
   output: {
     path: absPath.resolve(__dirname, PATHS.dist + '/assets/js'),
     //location of bundle in relation to index.html
     publicPath: '/assets/js/',
-    //output is: react.<hash>.js and vendor2.<hash>.js (hash to let know if file changed)
+    //output is: react.<hash>.js and modules.<hash>.js (hash to let know if file changed)
     filename: '[name].[chunkhash].js'
   },
   module: {
@@ -91,9 +81,9 @@ module.exports = {
        }
     }),
     //look at the total output of imports and pull out any duplicates to only
-    //include in the 'vendor2' bundle. Create a manifest.js file to let browser know if vendor file actually got changed
+    //include in the 'modules[hash].js' bundle. Create a manifest.js file to let browser know if vendor file actually got changed
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor2', 'manifest']
+      names: ['modules', 'manifest']
     }),
     new HtmlWebpackPlugin({
       //the template file to use
