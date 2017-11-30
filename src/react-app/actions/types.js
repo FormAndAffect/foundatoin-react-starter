@@ -1,2 +1,2 @@
 // auth
-export const TEST_TYPE = 'test_type';
+export const IS_ONLINE = 'is_online';

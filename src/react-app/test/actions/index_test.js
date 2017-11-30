@@ -1,17 +1,17 @@
 import { expect } from '../test_helper';
-import { VIEWS_TOGGLE } from '../../actions/types';
-import { viewsToggle } from '../../actions/views';
+import { IS_ONLINE } from '../../actions/types';
+import { isOnline } from '../../actions/isOnline';
 
 describe('actions', () => {
-	describe('viewsToggle', () => {
+	describe('isOnline', () => {
 		it('has the correct type', () => {
-			const action = viewsToggle();
-			expect(action.type).to.equal(VIEWS_TOGGLE);
+			const action = isOnline();
+			expect(action.type).to.equal(IS_ONLINE);
 		});
 
 		it('has the correct payload', () => {
-			const action = viewsToggle('open');
-			expect(action.payload).to.equal('open');
+			const action = isOnline(false);
+			expect(action.payload).to.equal(false);
 		})
 	});
 });

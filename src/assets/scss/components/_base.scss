@@ -46,7 +46,7 @@ $L:     1865px;
 // }
 
 //modal
-@mixin modal($max-width, $pading-vertical, $padding-horizontal) {
+@mixin modal-inner($max-width, $pading-vertical, $padding-horizontal) {
   background: $white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   //padding: 2.5em 4em;
@@ -58,6 +58,27 @@ $L:     1865px;
     padding: 1em 0.7em;
     flex-basis: 100%;
   }
+}
+
+.portal {
+   width: 100vw;
+   height: 100vh;
+   background: rgba(0,0,0, 0.8);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   position: fixed;
+   z-index: 100;
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity 0.6s, visibility 0.6s;
+   &.on {
+     opacity: 1 !important;
+     visibility: visible !important;
+    }
+    .portal-inner {
+       @include modal-inner(20em, 2em, 4em);
+    }
 }
 
 
@@ -297,6 +318,15 @@ helper classes
 [data-whatinput="keyboard"] :focus {
   outline-style: dashed;
     outline-color: yellow;
+}
+
+/* ==========================================================================
+offline mode
+========================================================================== */
+
+.offline-message {
+  font-size: 1.5em;
+  font-weight: 600;
 }
 
 /* ==========================================================================

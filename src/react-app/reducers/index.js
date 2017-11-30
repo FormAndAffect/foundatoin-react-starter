@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import { reducer as form } from 'redux-form';
-import reducerTest from './reducerTest';
+import reducerIsOnline from './reducerIsOnline';
 
 const rootReducer = combineReducers({
   form,
-  test: reducerTest,
+  isOnline: reducerIsOnline,
 });
 
 export default rootReducer;
