@@ -1,4 +1,4 @@
-# React PWA Starter  
+f# React PWA Starter  
 
 ### Description:
 A generic boilerplate for React SPA's. Includes:
