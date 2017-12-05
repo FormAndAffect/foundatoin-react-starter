@@ -1,6 +1,8 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Modal from './modal';
+import { bindActionCreators } from 'redux';
+import { isOnline } from '../actions/isOnline';
 
 class OfflineModal extends Component {
 
@@ -8,6 +10,27 @@ class OfflineModal extends Component {
     super(props);
     this.state = {
     }
+  }
+
+  componentWillMount() {
+    // tell users that they are offline/online (event)
+    const that = this;
+    window.addEventListener('load', function() {
+      function updateOnlineStatus(event) {
+        var condition = navigator.onLine ? "online" : "offline";
+
+        if(condition == 'offline') {
+         $('body').addClass('offline');
+         that.props.isOnline(false);
+        } else {
+         $('body').removeClass('offline');
+         that.props.isOnline(true);
+        }
+      }
+
+      window.addEventListener('online',  updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -39,4 +62,10 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(OfflineModal);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    isOnline: isOnline,
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OfflineModal);

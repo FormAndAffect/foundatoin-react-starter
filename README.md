@@ -1,16 +1,32 @@
-#babel
--es2015 is needed to transpile to streight es5 (for uglifyJs)
--transform-object-rest-spread is needed for the rest spread syntax
--transform-class-properties is needed for the  'static' class property
+# React PWA Starter  
 
-#foundation zerb template:
-https://github.com/zurb/foundation-zurb-template
+### Description:
+A generic boilerplate for React SPA's. Includes:
 
-#foundation docs:
-http://foundation.zurb.com/sites/docs/
+* routing: react-router, 
+* testing: Mocha, chai-jquery, webpack-bundle-analyzer
+* PWA setup: sw-precache
+* build system: Gulp, Webpack
+* code splitting and vendor caching
+* Sass and Vanilla JS compilling
+* HTML Page templating: Panini
 
-#notes
-html-webpack-plugin requires lodash to be installed
+### To run:
+install
+```
+npm install
+```
+start
+```
+npm start
+```
 
-possible useful dependancies to install:
-axios hammerjs lodash sanitize-filename
+### Side notes:
+* es2015 is needed to transpile to straight es5 (for uglifyJs)
+* transform-object-rest-spread is needed for the rest spread syntax
+* transform-class-properties is needed for the 'static' class property
+* html-webpack-plugin requires lodash
+
+### Foundation links
+* https://github.com/zurb/foundation-zurb-template
+* http://foundation.zurb.com/sites/docs/

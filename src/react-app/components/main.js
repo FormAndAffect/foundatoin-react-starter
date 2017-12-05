@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 import OffLineModal from './offline_modal';
-import { isOnline } from '../actions/isOnline';
+
+// note: this can't be a redux component
+// since it wraps the rect-router Switch.
+// if it is then child compoonents won't update on change route
 
 class Main extends Component {
 
@@ -14,48 +14,15 @@ class Main extends Component {
 		}
 	}
 
-	componentWillMount() {
-	  // tell users that they are offline/online (event)
-	  const that = this;
-	  window.addEventListener('load', function() {
-	    function updateOnlineStatus(event) {
-	      var condition = navigator.onLine ? "online" : "offline";
-
-	      if(condition == 'offline') {
-	       $('body').addClass('offline');
-	       that.props.isOnline(false);
-	      } else {
-	       $('body').removeClass('offline');
-	       that.props.isOnline(true);
-	      }
-	    }
-
-	    window.addEventListener('online',  updateOnlineStatus);
-	    window.addEventListener('offline', updateOnlineStatus);
-	  });
-	}
-
 	render() {
 		return (
 			<div className={`main`}>
-				online? : {this.props.online ? 'yes' : 'no'} <br/>
-				<Link to="/page-id" >page link</Link>
+				{this.props.children}
 				<OffLineModal/>
 			</div>
 			)
 	}
 }
 
-function mapStateToProps(state) {
-	return {
-		online: state.isOnline.online,
-	}
-}
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    isOnline: isOnline,
-  }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default Main;
